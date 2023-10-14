@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fancy Stopwatch</title>
+<style>
+  body {
+    background-image: url('cool_background.jpg'); /* Replace with your cool background image */
+    background-size: cover;
+    font-family: 'Caveat', cursive;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+
+  .stopwatch {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    max-width: 300px;
+    animation: fade-in 1s;
+  }
+
+  .time {
+    font-size: 4em;
+    transition: opacity 1s;
+  }
+
+  input {
+    padding: 5px;
+    margin: 10px;
+  }
+
+  .fade-out {
+    animation: fade-out 1s;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="stopwatch" id="stopwatch">
+  <div class="time" id="display">00:00:00</div>
+  <input type="number" id="hours" min="0" max="23" placeholder="Hours">
+  <input type="number" id="minutes" min="0" max="59" placeholder="Minutes">
+  <input type="number" id="seconds" min="0" max="59" placeholder="Seconds">
+  <button onclick="startTimer()">Start</button>
+  <button onclick="stopTimer()">Stop</button>
+</div>
+
+<script>
+let timerInterval;
+let totalSeconds = 0;
+
+function startTimer() {
+  const hours = parseInt(document.getElementById('hours').value) || 0;
+  const minutes = parseInt(document.getElementById('minutes').value) || 0;
+  const seconds = parseInt(document.getElementById('seconds').value) || 0;
+
+  totalSeconds = hours * 3600 + minutes * 60 + seconds;
+
+  if (totalSeconds > 0) {
+    document.getElementById('stopwatch').classList.remove('fade-out');
+    document.getElementById('display').classList.remove('fade-out');
+    timerInterval = setInterval(updateTime, 1000);
+  }
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  document.getElementById('stopwatch').classList.add('fade-out');
+  document.getElementById('display').classList.add('fade-out');
+}
+
+function updateTime() {
+  if (totalSeconds > 0) {
+    totalSeconds--;
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    const display = document.getElementById('display');
+    display.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+    if (totalSeconds === 0) {
+      playSound(); // Play sound when timer is done
+      clearInterval(timerInterval);
+    }
+  }
+}
+
+function playSound() {
+  const audio = new Audio('alarm.mp4'); // Replace with your sound file
+  audio.play();
+}
+</script>
+</body>
+</html>
